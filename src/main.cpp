@@ -2,6 +2,7 @@
 #include <fstream>
 #include <cstring>
 #include "vector"
+#include "core.h"
 
 using namespace std;
 vector<const char *> wordList;
@@ -9,8 +10,6 @@ vector<const char *> wordList;
 bool isLetter(char c) {
     return (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z');
 }
-
-//bool toLower()
 
 int getWordList(string filename) {
     int count = 0;
@@ -49,7 +48,7 @@ int main(int argc, char *argv[]) {
     bool wordSum = false;     // 单词数最多
     bool letterSum = false;     // 字母数最多
     bool ring = false;     // 允许单词环
-    char h = '0', t = '0', j = '0'; // 字母限制
+    char h = 0, t = 0, j = 0; // 字母限制
     bool file_output = false;
     const string outFile = "solution.txt";
     for (int i = 1; i < argc; i++) {
@@ -104,8 +103,8 @@ int main(int argc, char *argv[]) {
     //    cout << wordList[i] << endl;
     int ret = 0, size = wordList.size();
     vector<char *> result(32768, 0);
-
-
+    int type = (num) ? 0 : (ring) ? 2 : 1;
+    ret = process(wordList.data(), result.data(), size, type, letterSum, h, t, j);
 
     ofstream output;
     ostream &out = (file_output) ? output : cout;
