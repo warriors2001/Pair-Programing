@@ -1,11 +1,13 @@
 //
 // Created by 徐子航 on 2023/3/6.
 //
+#define  CORE
 #include <vector>
 #include <string>
 #include <algorithm>
 #include <iostream>
 #include <map>
+#include "core.h"
 
 using namespace std;
 
@@ -14,7 +16,7 @@ vector<string> words;
 //const int n = 26;
 int wordSize;
 
-void init(const char *wordList[], int len, char j) {
+void init( char *wordList[], int len, char j) {
     words.clear();
     for (int i = 0; i < len; ++i) {
         string word = wordList[i];
@@ -25,7 +27,10 @@ void init(const char *wordList[], int len, char j) {
     }
     wordSize = (int) words.size();
 }
-
+int hello(char * word[],char out) {
+    out = word[0][0];
+    return 1;
+}
 vector<int> node[30];
 bool book[30];
 int stack1[30], top = 0;    // stack[]: 记录寻找过程
@@ -392,8 +397,8 @@ int getRingChain(char *result[], bool letterSum, char head, char tail) {
 * type = 2, enable ring, get max chain.
 */
 
-int process(const char *wordList[], char *result[], int len,
-            int type, bool letterSum, char head, char tail, char j) {
+int process( char *wordList[], char *result[], int len,
+             int type, bool letterSum, char head, char tail, char j) {
     init(wordList, len, j);
     sort(words.begin(), words.end());
     words.erase(unique(words.begin(), words.end()), words.end());
@@ -407,4 +412,18 @@ int process(const char *wordList[], char *result[], int len,
     if (type == 2)  // -r
         return getRingChain(result, letterSum, head, tail);
     return getMaxChain(result, letterSum, head, tail);  // -w & -c
+}
+
+int gen_chain_word(char *words[], int len, char *result[],char head, char tail, char j, bool enable_loop) {
+    int type = (enable_loop) ? 2 : 1;
+    return process(words, result, len, type, false, head, tail, j);
+}
+
+int gen_chains_all( char *words[], int len, char *result[]) {
+    return process(words, result, len, 0, false, 0, 0, 0);
+}
+
+int gen_chain_char( char *words[], int len, char *result[], char head, char tail, char j, bool enable_loop) {
+    int type = (enable_loop) ? 2 : 1;
+    return process(words, result, len, type, true, head, tail, j);
 }

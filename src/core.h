@@ -7,5 +7,5 @@
 
 #endif //PAIRS_CORE_H
 
-int process(const char *wordList[], char *result[], int len,
+int process( char *wordList[], char *result[], int len,
             int type, bool letterSum, char head, char tail, char j);

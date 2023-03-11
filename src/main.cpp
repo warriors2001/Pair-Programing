@@ -5,7 +5,7 @@
 #include "core.h"
 
 using namespace std;
-vector<const char *> wordList;
+vector< char *> wordList;
 
 bool isLetter(char c) {
     return (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z');
