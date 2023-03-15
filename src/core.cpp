@@ -1,13 +1,11 @@
 //
 // Created by 徐子航 on 2023/3/6.
 //
-#define  CORE
 #include <vector>
 #include <string>
 #include <algorithm>
 #include <iostream>
 #include <map>
-#include "core.h"
 
 using namespace std;
 
@@ -16,7 +14,7 @@ vector<string> words;
 //const int n = 26;
 int wordSize;
 
-void init( char *wordList[], int len, char j) {
+void init(char *wordList[], int len, char j) {
     words.clear();
     for (int i = 0; i < len; ++i) {
         string word = wordList[i];
@@ -27,10 +25,7 @@ void init( char *wordList[], int len, char j) {
     }
     wordSize = (int) words.size();
 }
-int hello(char * word[],char out) {
-    out = word[0][0];
-    return 1;
-}
+
 vector<int> node[30];
 bool book[30];
 int stack1[30], top = 0;    // stack[]: 记录寻找过程
@@ -89,8 +84,11 @@ void checkLoop() {
             if (words[j].back() - 'a' == i) {
                 if (last == -1)
                     last = j;
-                else
-                    cout << "Ring detected!" << endl;
+                else {
+                    // cout << "Ring detected!" << endl;
+                    string errmsg = "Ring dectected without -r option!";
+                    throw errmsg;
+                }
             }
         }
     }
@@ -113,7 +111,9 @@ void checkLoop() {
                         }
                     }
                 }
-                cout << "Ring detected!" << endl;
+                // cout << "Ring detected!" << endl;
+                string errmsg = "Ring dectected without -r option!";
+                throw errmsg;
             }
             siz[col[i]] = true; // 当前字母对应强连通分量已访问
         }
@@ -124,6 +124,22 @@ vector<string> ans;
 vector<int> now;
 int ans_cnt = 0;
 
+void calCnt(int i, bool loop) {
+    if (now.size() > 1) {
+        if (ans_cnt > 20000)
+            return;
+        ans_cnt++;
+    }
+    for (int j: node[i]) { // 当前字母开头的所有单词
+        int to = words[j].back() - 'a';
+        if (i == to && loop)    // 自环
+            continue;
+        now.push_back(j);
+        calCnt(to, i == to);    // 继续向下查找
+        now.pop_back();
+    }
+}
+
 void dfsAll(int i, bool loop) {
     if (now.size() > 1) {   // add new ans
         string S;
@@ -133,7 +149,6 @@ void dfsAll(int i, bool loop) {
             S += words[j];
         }
         ans.push_back(S);
-        ans_cnt++;
     }
     for (int j: node[i]) { // 当前字母开头的所有单词
         int to = words[j].back() - 'a';
@@ -166,9 +181,15 @@ void transResult(char *result[]) {  // 转化为结果输出
 }
 
 int getAllChains(char *result[]) {
-//    for (int i = 0; i < 26; ++i) {
-//        dfs_cal_all(i, false);
-//    }
+    for (int i = 0; i < 26; ++i) { // check Num of chains
+        calCnt(i, false);
+    }
+    if (ans_cnt > 20000) {
+        string errmsg = "Too many word chains!";
+        throw errmsg;
+    }
+    now.clear();
+
     for (int i = 0; i < 26; ++i) {
         dfsAll(i, false);
     }
@@ -397,15 +418,15 @@ int getRingChain(char *result[], bool letterSum, char head, char tail) {
 * type = 2, enable ring, get max chain.
 */
 
-int process( char *wordList[], char *result[], int len,
-             int type, bool letterSum, char head, char tail, char j) {
+int process(char *wordList[], char *result[], int len,
+            int type, bool letterSum, char head, char tail, char j) {
     init(wordList, len, j);
     sort(words.begin(), words.end());
     words.erase(unique(words.begin(), words.end()), words.end());
     wordSize = (int) words.size();
     getSCC();
     if (type < 2) {
-        checkLoop();    // not -r
+        //checkLoop();    // not -r
     }
     if (type == 0)  // -n
         return getAllChains(result);
@@ -414,16 +435,34 @@ int process( char *wordList[], char *result[], int len,
     return getMaxChain(result, letterSum, head, tail);  // -w & -c
 }
 
-int gen_chain_word(char *words[], int len, char *result[],char head, char tail, char j, bool enable_loop) {
+int gen_chain_word(char *words[], int len, char *result[], char head, char tail, char j, bool enable_loop) {
     int type = (enable_loop) ? 2 : 1;
-    return process(words, result, len, type, false, head, tail, j);
+    int ret = 0;
+    try {
+        ret = process(words, result, len, type, false, head, tail, j);
+    } catch (string msg) {
+        return -1;
+    }
+    return ret;
 }
 
-int gen_chains_all( char *words[], int len, char *result[]) {
-    return process(words, result, len, 0, false, 0, 0, 0);
+int gen_chains_all(char *words[], int len, char *result[]) {
+    int ret = 0;
+    try {
+        ret = process(words, result, len, 0, false, 0, 0, 0);
+    } catch (string msg) {
+        return -1;
+    }
+    return ret;
 }
 
-int gen_chain_char( char *words[], int len, char *result[], char head, char tail, char j, bool enable_loop) {
+int gen_chain_char(char *words[], int len, char *result[], char head, char tail, char j, bool enable_loop) {
     int type = (enable_loop) ? 2 : 1;
-    return process(words, result, len, type, true, head, tail, j);
+    int ret = 0;
+    try {
+        ret = process(words, result, len, type, true, head, tail, j);
+    } catch (string msg) {
+        return -1;
+    }
+    return ret;
 }
