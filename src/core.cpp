@@ -426,7 +426,7 @@ int process(char *wordList[], char *result[], int len,
     wordSize = (int) words.size();
     getSCC();
     if (type < 2) {
-        //checkLoop();    // not -r
+        checkLoop();    // not -r
     }
     if (type == 0)  // -n
         return getAllChains(result);

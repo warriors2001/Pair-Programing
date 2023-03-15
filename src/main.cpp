@@ -87,6 +87,15 @@ int main(int argc, char *argv[]) {
                         } else {
                             j = letter[0];
                         }
+                        if(letter.length() > 1) {
+                            string errmsg = "Argument of option " + arg + " should be a single alphabet!";
+                            throw errmsg;
+                        }
+                        char c = letter[0];
+                        if (!isLetter(c)) {
+                            string errmsg = "Argument of option " + arg + " should be a single alphabet!";
+                            throw errmsg;
+                        }
                         i++;
                         break;
                     }
