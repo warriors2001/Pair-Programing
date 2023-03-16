@@ -62,9 +62,8 @@ int main(int argc, char *argv[]) {
     try {
         for (int i = 1; i < argc; i++) {
             string arg = argv[i];
-//        cout << arg << ' ';
             if (arg[0] == '-' && arg.length() == 2) {
-                switch (arg[1]) {
+                switch (tolower(arg[1])) {
                     case 'n':
                         num = true;
                         break;
@@ -81,11 +80,11 @@ int main(int argc, char *argv[]) {
                     case 'j': {
                         string letter = argv[i + 1];
                         if (arg[1] == 'h') {
-                            h = letter[0];
+                            h = tolower(letter[0]);
                         } else if (arg[1] == 't') {
-                            t = letter[0];
+                            t = tolower(letter[0]);
                         } else {
-                            j = letter[0];
+                            j = tolower(letter[0]);
                         }
                         if(letter.length() > 1) {
                             string errmsg = "Argument of option " + arg + " should be a single alphabet!";
@@ -130,7 +129,7 @@ int main(int argc, char *argv[]) {
             string errmsg = "Argument of -h and -j conflict. No answer";
             throw errmsg;
         }
-        if (num == true && (h != 0 || t != 0 || j != 0)) {
+        if (num == true && (h != 0 || t != 0 || j != 0 || ring != false)) {
             string errmsg = "-n should be used independantly";
             throw errmsg;
         }
