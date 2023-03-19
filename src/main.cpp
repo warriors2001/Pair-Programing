@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
     bool letterSum = false;     // 字母数最多
     bool ring = false;     // 允许单词环
     char h = 0, t = 0, j = 0; // 字母限制
-    bool file_output = false;
+    bool file_output = true;
     const string outFile = "solution.txt";
     try {
         for (int i = 1; i < argc; i++) {
@@ -69,11 +69,11 @@ int main(int argc, char *argv[]) {
                         break;
                     case 'w':
                         wordSum = true;
-                        file_output = true;
+                        //file_output = true;
                         break;
                     case 'c':
                         letterSum = true;
-                        file_output = true;
+                        //file_output = true;
                         break;
                     case 'h':
                     case 't':
